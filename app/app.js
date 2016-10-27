@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const chatRouter = require('./routes/chat_router.js');
+const messageRouter = require('./routes/message_router.js');
 
 const app = express();
 
