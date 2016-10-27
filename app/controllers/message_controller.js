@@ -2,7 +2,7 @@ const messageDAO = require('../services/message_DAO.js');
 
 class MessageController {
   static getAllOfChat () {
-    messageDAO.all()
+    messageDAO.byChatID()
   }
 
   static postMessage () {
