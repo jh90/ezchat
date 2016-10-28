@@ -14,8 +14,8 @@ class ChatController {
   }
 
   static createChat (req, res) {
-    const { id, start_date, title } = req.body;
-    chatDAO.create({ id, start_date, title }).then((chat) => {
+    const { id, title } = req.body;
+    chatDAO.create({ id, title }).then((chat) => {
       res.status(200).json(chat);
     });
   }

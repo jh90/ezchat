@@ -1,4 +1,4 @@
-const db = require('../db/sql/db.js');
+const db = require('../db/db.js');
 const sql = require('../db/sql_provider.js').chats;
 const Chat = require('../models/chat.js');
 
@@ -12,8 +12,8 @@ class ChatDAO {
   }
 
   static create (data) {
-    const { id, start_date, title } = data;
-    return db.one(sql.create, [id, start_date, title]);
+    const { id, title } = data;
+    return db.one(sql.create, [id, title]);
   }
 }
 
