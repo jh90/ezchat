@@ -1,12 +1,15 @@
-const SQL = require('../db/provider.js').messages;
+const db = require('../db/db.js');
+const sql = require('../db/sql_provider.js').messages;
+const Message = require('../models/message.js');
 
 class MessageDAO {
-  static byChatID () {
-
+  static byChatID (cid) {
+    return db.one(sql.find(), [cid], (message) => new Message(message));
   }
 
-  static create () {
-
+  static create (data) {
+    const { chat_id, post_time, body, alias } = data;
+    return db.one(sql.create(), [chat_id, post_time, body, alias], (message) => new Message(message));
   }
 }
 
