@@ -26413,7 +26413,7 @@
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
 	
 	    _this.state = {
-	      messages: []
+	      chats: []
 	    };
 	    return _this;
 	  }
@@ -26423,28 +26423,39 @@
 	    value: function componentDidMount() {
 	      var _this2 = this;
 	
-	      _superagent2.default.get('/api/messages/2').then(function (response) {
-	        var messagesByMostRecent = response.body.reverse();
+	      _superagent2.default.get('/api/chats').then(function (response) {
 	        _this2.setState({
-	          messages: messagesByMostRecent
+	          chats: response.body
 	        });
 	      });
-	      _superagent2.default.post('/api/chats').send({ title: 'moar testing' }).then(function (response) {
-	        console.log('hit');
-	        console.log(response);
+	    }
+	  }, {
+	    key: 'getMessagesOfChat',
+	    value: function getMessagesOfChat(cid) {
+	      _superagent2.default.get('/api/messages/' + cid).then(function (response) {
+	        return response.body.map(function (message) {
+	          var text = message.body;
+	          return _react2.default.createElement(
+	            'h1',
+	            null,
+	            text
+	          );
+	        });
 	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this3 = this;
+	
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        this.state.messages.map(function (message) {
+	        this.state.chats.map(function (chat) {
 	          return _react2.default.createElement(
 	            'div',
 	            null,
-	            message.body + ' - ' + message.alias + ' - ' + message.cid
+	            _this3.getMessagesOfChat(chat.id)
 	          );
 	        })
 	      );

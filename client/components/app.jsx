@@ -6,36 +6,22 @@ export default class App extends React.Component {
   constructor () {
     super();
     this.state = {
-      messages: [],
+      chats: [],
     };
   }
 
   componentDidMount() {
-    daemon.get('/api/messages/2').then((response) => {
-      const messagesByMostRecent = response.body.reverse();
+    daemon.get('/api/chats').then((response) => {
       this.setState({
-        messages: messagesByMostRecent,
+        chats: response.body,
       });
-    });
-    daemon.post('/api/chats').send({ title: 'moar testing' }).then((response) => {
-      console.log('hit');
-      console.log(response);
-    });
-    daemon.post('/api/messages').send({ chat_id: 1, body: 'test' }).then((response) => {
-      console.log(response);
     });
   }
 
   render () {
     return (
       <div>
-        {
-          this.state.messages.map((message) => {
-            return (
-              <div>{`${message.body} - ${message.alias} - ${message.cid}`}</div>
-            );
-          })
-        }
+
       </div>
     );
   }
