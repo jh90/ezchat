@@ -4,7 +4,7 @@ import daemon from 'superagent';
 
 export default class Main extends Component {
   constructor () {
-
+    super();
   }
 
   render () {

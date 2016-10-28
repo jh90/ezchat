@@ -1,1 +1,1 @@
-INSERT INTO chats (start_date, title) VALUES ($1, $2);
+INSERT INTO chats (title) VALUES ($1) RETURNING *;

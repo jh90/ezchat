@@ -4,16 +4,15 @@ const Chat = require('../models/chat.js');
 
 class ChatDAO {
   static all () {
-    return db.map(sql.all(), [], (row) => new Chat(row));
+    return db.map(sql.all, [], (row) => new Chat(row));
   }
 
-  static byID (id) {
-    return db.one(sql.find(), [id], (chat) => new Chat(chat));
+  static byID ({ cid }) {
+    return db.one(sql.find, [cid], (chat) => new Chat(chat));
   }
 
-  static create (data) {
-    const { id, title } = data;
-    return db.one(sql.create, [id, title]);
+  static create ({ title }) {
+    return db.one(sql.create, [title], (chat) => new Chat(chat));
   }
 }
 

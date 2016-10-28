@@ -8,14 +8,13 @@ class ChatController {
   }
 
   static getChat (req, res) {
-    chatDAO.byID({ id: req.params.id }).then((chat) => {
+    chatDAO.byID({ cid: req.params.cid }).then((chat) => {
       res.status(200).json(chat);
     });
   }
 
   static createChat (req, res) {
-    const { id, title } = req.body;
-    chatDAO.create({ id, title }).then((chat) => {
+    chatDAO.create({ title: req.body.title }).then((chat) => {
       res.status(200).json(chat);
     });
   }

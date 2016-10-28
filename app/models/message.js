@@ -1,8 +1,7 @@
 class Message {
-  constructor ({ id, cid, timestamp, body, alias }) {
+  constructor ({ id, chat_id, timestamp, body, alias }) {
     this.id = id;
-    this.cid = cid;
-    this.timestamp = timestamp;
+    this.cid = chat_id;
     this.body = body;
     this.alias = alias;
   }
