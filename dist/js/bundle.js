@@ -21449,7 +21449,7 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _main = __webpack_require__(236);
+	var _main = __webpack_require__(238);
 	
 	var _main2 = _interopRequireDefault(_main);
 	
@@ -26402,6 +26402,10 @@
 	
 	var _chat_view2 = _interopRequireDefault(_chat_view);
 	
+	var _new_chat_form = __webpack_require__(237);
+	
+	var _new_chat_form2 = _interopRequireDefault(_new_chat_form);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26420,15 +26424,19 @@
 	
 	    _this.state = {
 	      chats: [],
-	      selectedChat: null
+	      messages: [],
+	      newChat: false
 	    };
-	    _this.selectChatToDisplay = _this.selectChatToDisplay.bind(_this);
+	    _this.getAllChats = _this.getAllChats.bind(_this);
+	    _this.getMessagesOfChat = _this.getMessagesOfChat.bind(_this);
+	    _this.createChat = _this.createChat.bind(_this);
+	    _this.startNewChat = _this.startNewChat.bind(_this);
 	    return _this;
 	  }
 	
 	  _createClass(App, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
+	    key: 'getAllChats',
+	    value: function getAllChats() {
 	      var _this2 = this;
 	
 	      _superagent2.default.get('/api/chats').then(function (response) {
@@ -26438,11 +26446,35 @@
 	      });
 	    }
 	  }, {
-	    key: 'selectChatToDisplay',
-	    value: function selectChatToDisplay(cid) {
-	      this.setState({
-	        selectedChat: cid
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.getAllChats();
+	    }
+	  }, {
+	    key: 'getMessagesOfChat',
+	    value: function getMessagesOfChat(cid) {
+	      var _this3 = this;
+	
+	      _superagent2.default.get('/api/messages/' + cid).then(function (response) {
+	        _this3.setState({
+	          messages: response.body
+	        });
 	      });
+	    }
+	  }, {
+	    key: 'createChat',
+	    value: function createChat(title) {
+	      _superagent2.default.post('/api/chats').send({ title: title }).then(function (response) {
+	        console.log(response);
+	      });
+	    }
+	  }, {
+	    key: 'startNewChat',
+	    value: function startNewChat(title) {
+	      this.setState({
+	        newChat: true
+	      });
+	      this.createChat(title);
 	    }
 	  }, {
 	    key: 'render',
@@ -26450,8 +26482,9 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_chat_list2.default, { chats: this.state.chats, handleClick: this.selectChatToDisplay }),
-	        this.state.selectedChat ? _react2.default.createElement(_chat_view2.default, { cid: this.state.selectedChat }) : false
+	        _react2.default.createElement(_chat_list2.default, { chats: this.state.chats, handleClick: this.getMessagesOfChat }),
+	        _react2.default.createElement(_chat_view2.default, { messages: this.state.messages }),
+	        _react2.default.createElement(_new_chat_form2.default, { handleSubmit: this.startNewChat })
 	      );
 	    }
 	  }]);
@@ -28082,7 +28115,10 @@
 	  function ChatList() {
 	    _classCallCheck(this, ChatList);
 	
-	    return _possibleConstructorReturn(this, (ChatList.__proto__ || Object.getPrototypeOf(ChatList)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (ChatList.__proto__ || Object.getPrototypeOf(ChatList)).call(this));
+	
+	    _this.handleClick = _this.handleClick.bind(_this);
+	    return _this;
 	  }
 	
 	  _createClass(ChatList, [{
@@ -28134,9 +28170,9 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _superagent = __webpack_require__(229);
+	var _new_message_form = __webpack_require__(236);
 	
-	var _superagent2 = _interopRequireDefault(_superagent);
+	var _new_message_form2 = _interopRequireDefault(_new_message_form);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -28147,7 +28183,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
 	var propTypes = {
-	  cid: _react2.default.PropTypes.integer
+	  messages: _react2.default.PropTypes.array
 	};
 	
 	var ChatView = function (_React$Component) {
@@ -28156,32 +28192,16 @@
 	  function ChatView() {
 	    _classCallCheck(this, ChatView);
 	
-	    var _this = _possibleConstructorReturn(this, (ChatView.__proto__ || Object.getPrototypeOf(ChatView)).call(this));
-	
-	    _this.state = {
-	      messages: []
-	    };
-	    return _this;
+	    return _possibleConstructorReturn(this, (ChatView.__proto__ || Object.getPrototypeOf(ChatView)).apply(this, arguments));
 	  }
 	
 	  _createClass(ChatView, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      var _this2 = this;
-	
-	      _superagent2.default.get('/api/messages/' + this.props.cid).then(function (response) {
-	        _this2.setState({
-	          messages: response.body
-	        });
-	      });
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'ul',
 	        null,
-	        this.state.messages.map(function (message) {
+	        this.props.messages.map(function (message) {
 	          return _react2.default.createElement(
 	            'li',
 	            null,
@@ -28202,6 +28222,140 @@
 
 /***/ },
 /* 236 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var propTypes = {
+	  handleSubmit: _react2.default.PropTypes.func
+	};
+	
+	var NewMessageForm = function (_React$Component) {
+	  _inherits(NewMessageForm, _React$Component);
+	
+	  function NewMessageForm() {
+	    _classCallCheck(this, NewMessageForm);
+	
+	    var _this = _possibleConstructorReturn(this, (NewMessageForm.__proto__ || Object.getPrototypeOf(NewMessageForm)).call(this));
+	
+	    _this.state = {
+	      body: '',
+	      alias: ''
+	    };
+	    return _this;
+	  }
+	
+	  _createClass(NewMessageForm, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement('div', null);
+	    }
+	  }]);
+	
+	  return NewMessageForm;
+	}(_react2.default.Component);
+	
+	exports.default = NewMessageForm;
+	
+	
+	NewMessageForm.propTypes = propTypes;
+
+/***/ },
+/* 237 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var propTypes = {
+	  handleSubmit: _react2.default.PropTypes.func
+	};
+	
+	var NewChatForm = function (_React$Component) {
+	  _inherits(NewChatForm, _React$Component);
+	
+	  function NewChatForm() {
+	    _classCallCheck(this, NewChatForm);
+	
+	    var _this = _possibleConstructorReturn(this, (NewChatForm.__proto__ || Object.getPrototypeOf(NewChatForm)).call(this));
+	
+	    _this.state = {
+	      title: ''
+	    };
+	    _this.handleChange = _this.handleChange.bind(_this);
+	    _this.handleSubmit = _this.handleSubmit.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(NewChatForm, [{
+	    key: 'handleChange',
+	    value: function handleChange(e) {
+	      this.setState({
+	        title: e.target.value
+	      });
+	    }
+	  }, {
+	    key: 'handleSubmit',
+	    value: function handleSubmit() {
+	      this.props.handleSubmit(title);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'form',
+	        { onSubmit: this.handleSubmit },
+	        _react2.default.createElement('input', { name: 'title', type: 'text', placeholder: 'Title', onChange: this.handleChange }),
+	        _react2.default.createElement('input', { type: 'submit' })
+	      );
+	    }
+	  }]);
+	
+	  return NewChatForm;
+	}(_react2.default.Component);
+	
+	exports.default = NewChatForm;
+	
+	
+	NewChatForm.propTypes = propTypes;
+
+/***/ },
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
